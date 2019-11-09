@@ -23,18 +23,15 @@ export const deletePost = data => {
     axios
       .delete("https://jsonplaceholder.typicode.com/posts/1")
       .then(function(response) {
-        console.log(response);
         dispatch(updateAdding(false));
       })
       .catch(function(error) {
-        console.log(error);
       });
   };
 };
 
 export const createPost = () => {
   return (dispatch,getState) => {
-    //console.log(getState);return false;
     const {post} = getState();
     dispatch(updateAdding(true));
     axios
@@ -50,7 +47,6 @@ export const createPost = () => {
         }
       )
       .then(function(response) {
-        console.log(response);
         dispatch(updateAdding(false));
       })
       .catch(function(error) {
@@ -60,7 +56,6 @@ export const createPost = () => {
 };
 
 export const fetchPosts = () => {
-  console.log("inisde action");
   return (dispatch, getState) => {
     dispatch(updateFetching(true));
 
@@ -68,10 +63,8 @@ export const fetchPosts = () => {
       .get("https://jsonplaceholder.typicode.com/posts")
       .then(response => {
         // handle success
-        // this.setState({ posts: response.data });
         dispatch(setPosts(response.data));
         dispatch(updateFetching(false));
-        //console.log(response.data);
       })
       .catch(error => {
         // handle error
@@ -82,14 +75,14 @@ export const fetchPosts = () => {
 
 export const editPost = (id) => {
   return (dispatch, getState) => {
-   // dispatch(updateFetching(true));
+   dispatch(updateFetching(true));
 
     axios
       .get("https://jsonplaceholder.typicode.com/posts/" + id)
       .then(response => {
         // handle success
-        // this.setState({ posts: response.data });
         dispatch(newPost(response.data));
+        dispatch(updateFetching(false));
         //console.log(response.data);
       })
       .catch(error => {
@@ -117,7 +110,6 @@ export const updatePost = (id) => {
         }
       )
       .then(function(response) {
-        console.log(response);
         dispatch(updateAdding(false));
       })
       .catch(function(error) {

@@ -1,4 +1,4 @@
-import { Form, Spinner, Button } from "react-bootstrap";
+import { Form, Spinner, Button, Alert } from "react-bootstrap";
 import React from "react";
 import { connect } from "react-redux";
 import {
@@ -14,7 +14,9 @@ class CreatePost extends React.Component {
   state = {
     userId: "",
     title: "",
-    body: ""
+    body: "",
+    alert: false,
+    alertMessage: ""
   };
 
   /**
@@ -26,7 +28,17 @@ class CreatePost extends React.Component {
     this.setState({
       ...post
     });
-    //console.log(this.props);
+  }
+
+  /**
+   * component will unmount
+   */
+  componentWillUnmount() {
+    this.props.newPost({
+      userId: "",
+      title: "",
+      body: ""
+    });
   }
 
   /**
@@ -45,10 +57,18 @@ class CreatePost extends React.Component {
     this.props.newPost(postBody);
     if (post.id) {
       this.props.updatePost(post.id);
+      setTimeout(
+        () => this.setState({ alert: true, alertMessage: "Updated" }),
+        1000
+      );
     } else {
+      setTimeout(
+        () => this.setState({ alert: true, alertMessage: "Added" }),
+        1000
+      );
+
       this.props.createPost();
     }
-
     //this.props.newPost();
   };
 
@@ -57,12 +77,14 @@ class CreatePost extends React.Component {
    */
   render() {
     const { is_adding, post } = this.props;
-    const { userId, title, body } = this.state;
+    const { userId, title, body, alert, alertMessage } = this.state;
     if (is_adding) {
       return (
-        <Spinner animation="border" role="status">
-          <span className="sr-only">Loading...</span>
-        </Spinner>
+        <div style={{ position: "fixed", top: "50%", left: "50%" }}>
+          <Spinner animation="border" role="status">
+            <span className="sr-only">Loading...</span>
+          </Spinner>
+        </div>
       );
     }
 
@@ -73,6 +95,8 @@ class CreatePost extends React.Component {
 
     return (
       <div>
+        {alert && <Alert variant="success">{alertMessage} successfully.</Alert>}
+
         <Form onSubmit={this.handleSubmit}>
           <Form.Group controlId="formBasicEmail">
             <Form.Label>User Id</Form.Label>

@@ -1,4 +1,4 @@
-import { Table, Spinner, ButtonToolbar, Button, Modal } from "react-bootstrap";
+import { Table, Spinner, ButtonToolbar, Button, Modal, Alert } from "react-bootstrap";
 import React from "react";
 import {
   fetchPosts,
@@ -14,7 +14,8 @@ class Posts extends React.Component {
    */
   state = {
     modal: false,
-    id: ""
+    alert:false,
+    alertMessage:""
   };
 
   /**
@@ -32,13 +33,16 @@ class Posts extends React.Component {
     const { id } = this.state;
     this.setState({ modal: false });
     this.props.deletePost(id);
+    setTimeout(
+      () => this.setState({ alert: true, alertMessage: "Deleted" }),
+      1000
+    );
   };
 
   /**
    *
    */
   handleEdit = id => {
-    console.log(id);
     this.props.editPost(id);
     setTimeout(() => this.props.history.push("/create_post"), 1000);
   };
@@ -48,7 +52,7 @@ class Posts extends React.Component {
    */
   render() {
     const { is_fetching, posts, is_adding } = this.props;
-    const { modal } = this.state;
+    const { modal, alert, alertMessage } = this.state;
 
     if (is_fetching || is_adding) {
       return (
@@ -62,6 +66,7 @@ class Posts extends React.Component {
 
     return (
       <div>
+        {alert && <Alert variant="success">{alertMessage} successfully.</Alert>}
         <Modal show={modal} onHide={() => this.setState({ modal: false })}>
           <Modal.Header closeButton>
             <Modal.Title>Confirmation</Modal.Title>
